@@ -7,7 +7,7 @@ numprocs = world.size
 myid = world.rank
 procname = MPI.Get_processor_name()
 
-
+# test comment
 for i in range(2, 7):
     random.seed(i)
     list_size = 10 ** i
