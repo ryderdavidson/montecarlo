@@ -3,12 +3,12 @@ import math
 import random
 
 world = MPI.COMM_WORLD
-numprocs = world.size               # SBATCH variable: nodes (defined in SBATCH file)
+numprocs = world.size                               # SBATCH variable: nodes (defined in SBATCH file)
 myid = world.rank
 procname = MPI.Get_processor_name()
 
-START_RANGE = 2     # Lower range (10 ** START_RANGE) number of points considered in first quadrant
-END_RANGE = 7       # Upper range (10 ** END_RANGE) number of points considered in first quadrant
+START_RANGE = 2                                     # Lower range (10 ** START_RANGE) number of points 
+END_RANGE = 7                                       # Upper range (10 ** END_RANGE) number of points 
 
 def main():
     for i in range(START_RANGE, END_RANGE):
@@ -18,9 +18,9 @@ def main():
         for j in range(list_size):
             points.append([random.uniform(0, 1), random.uniform(0, 1)])
 
-        block = list_size // numprocs               # Block size = number of points passed to sheep nodes 
-        first_block = block + list_size%numprocs    # First block = number of points passed to shepherd node
-
+        block = list_size // numprocs               # block: number of points passed to sheep nodes 
+        first_block = block + list_size%numprocs    # first_block: number of points passed to shepherd node
+                                                    # (accounts for any remainder not passed to sheep nodes)
         start_index = first_block + (myid-1)*block
         end_index = start_index + block
 
@@ -43,7 +43,7 @@ def main():
         if myid == 0:
             endwtime = MPI.Wtime()
             runtime = endwtime - startwtime
-            pi_estimate = 4*sum / list_size         # pi_estimate = total points within circle / total points
+            pi_estimate = 4*sum / list_size         # pi_estimate = points within circle / total points
             delta = abs(pi_estimate - math.pi)
             print("List Size:", list_size, "| Number of Nodes:", numprocs)
             print("{:30} {:>10d}"
@@ -54,5 +54,7 @@ def main():
                   .format("Delta Value:", delta))
             print("{:30} {:>10.6f} \n"
                   .format("Runtime (sec):", runtime))
+
+    print("--------------------------------------------\n")
 
         world.barrier()
